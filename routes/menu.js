@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
   try {
-    const menus = await prisma.menu.findMany(); // ✅ menu (singulier, avec le bon modèle)
-    res.json(menus); // on envoie les données telles quelles
+    const menus = await prisma.menus.findMany(); 
+    res.json(menus); // on envoie les données 
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erreur lors de la récupération des menus' });
