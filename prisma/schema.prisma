@@ -16,3 +16,20 @@ model menus {
   updated_at  DateTime @default(now()) @db.Timestamptz(6)
   image       String?  @db.VarChar(10)
 }
+
+model orders {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  status     String?   @default("pending") @db.VarChar(50)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model users {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  email      String    @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
