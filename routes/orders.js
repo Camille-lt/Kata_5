@@ -35,4 +35,22 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  const { user_id, status } = req.body;
+
+  try {
+    const newOrder = await prisma.orders.create({
+      data: {
+        user_id,
+        status: status || 'pending', // valeur par défaut si non fournie
+      },
+    });
+
+    res.status(201).json(newOrder);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la création de la commande" });
+  }
+});
+
 module.exports = router;
