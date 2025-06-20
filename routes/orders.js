@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
     try {
-        const orders = await prisma.orders.findMany(); 
+        const orders = await prisma.orders.findMany();
         res.json(orders); // on envoi les données
     } catch (error) {
         console.error(error);
@@ -17,40 +17,59 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'ID invalide' });
-  }
-  try {
-    const order = await prisma.orders.findUnique({
-      where: { id },
-    });
-    if (!order) {
-      return res.status(404).json({ error: 'Commande non trouvée' });
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'ID invalide' });
     }
-    res.json(order);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur lors de la récupération de la commande' });
-  }
+    try {
+        const order = await prisma.orders.findUnique({
+            where: { id },
+        });
+        if (!order) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+        res.json(order);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erreur lors de la récupération de la commande' });
+    }
 });
 
 router.post('/', async (req, res) => {
-  const { user_id, status } = req.body;
+    const { user_id, status } = req.body;
 
-  try {
-    const newOrder = await prisma.orders.create({
-      data: {
-        user_id,
-        status: status || 'pending', // valeur par défaut si non fournie
-      },
-    });
+    try {
+        const newOrder = await prisma.orders.create({
+            data: {
+                user_id,
+                status: status || 'pending',
+            },
+        });
 
-    res.status(201).json(newOrder);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la création de la commande" });
-  }
+        res.status(201).json(newOrder);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur lors de la création de la commande" });
+    }
 });
+
+router.put('/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { status } = req.body;
+    try {
+        const updateOrder = await prisma.orders.update({
+            where: { id },
+            data: {
+                status,
+                updated_at: new Date()
+            }
+        });
+        res.status(200).json(updateOrder); // renvoyer la commande mise à jour
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur lors de la mise à jour de votre commande" });
+    }
+});
+
 
 module.exports = router;
