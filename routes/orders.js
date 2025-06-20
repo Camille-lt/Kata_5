@@ -16,4 +16,23 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'ID invalide' });
+  }
+  try {
+    const order = await prisma.orders.findUnique({
+      where: { id },
+    });
+    if (!order) {
+      return res.status(404).json({ error: 'Commande non trouvée' });
+    }
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur lors de la récupération de la commande' });
+  }
+});
+
 module.exports = router;
