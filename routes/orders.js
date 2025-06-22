@@ -37,7 +37,6 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { user_id, status } = req.body;
-
     try {
         const newOrder = await prisma.orders.create({
             data: {
@@ -68,6 +67,19 @@ router.put('/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Erreur lors de la mise à jour de votre commande" });
+    }
+});
+
+router.delete('/:id', async (req,res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const deletedOrder = await prisma.orders.delete({
+            where: { id },
+        });
+        res.status(200).json({ message:'Commande supprimé', deletedOrder});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erreur lors de la suppresion de votre commande'})
     }
 });
 
